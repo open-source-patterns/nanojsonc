@@ -1,0 +1,33 @@
+{
+  "name": {
+    "first": "John",
+    "last": "Doe"
+  },
+  "age": 30,
+  "phone": null,
+  "isStudent": false,
+  "isEmployed": true,
+  "hobbies": ["Reading", "Hiking", "Cooking"],
+  "address": {
+    "street": "123 Main St",
+    "city": "Asgard",
+    "state": "CA",
+    "zip": "12345"
+  },
+  "children": [
+    {
+      "name": {
+        "first": "Janie",
+        "last": "Doe"
+      },
+      "age": 13
+    },
+    {
+      "name": {
+        "first": "Johnny",
+        "last": "Doe"
+      },
+      "age": 14
+    }
+  ]
+}
