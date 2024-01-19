@@ -1,3 +1,11 @@
+## Sponsor this project
+
+**Open Source Patterns Inc** is a 501(c)(3) non-profit organization dedicated to fostering innovation through open source projects.
+
+As a **tax-exempt entity**, your donations to Open Source Patterns are eligible for **tax deductions** and **write-offs**, providing you with an opportunity to support our mission while also receiving a valuable tax benefit.
+
+Your generous contributions enable us to add, maintain and enhance our open source projects, empowering developers and communities worldwide. By donating, you become an integral part of our commitment to advancing technology and promoting accessibility.
+
 ## nanoJSONc - Event-Driven JSON Parser for C
 
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
