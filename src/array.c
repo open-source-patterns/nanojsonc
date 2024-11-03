@@ -153,8 +153,9 @@ void nanojsonc_parse_array(const char *const json, const char *const parentKey, 
             cursor++;
         }
 
-        if (isdigit(*cursor)) { // value: number
+        if (isdigit(*cursor) || *cursor == '-') { // value: number
             start = cursor;
+            cursor++;
             for (; *cursor != '\0' && isdigit(*cursor); cursor++); // end digit (non-whitespace)
             long len = cursor - start;
 
