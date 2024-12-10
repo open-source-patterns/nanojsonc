@@ -54,12 +54,16 @@ if (BUILD_TESTS)
 
     # Enable AddressSanitizer for Debug builds
     if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT WIN32) # sanitizer
+        # Add AddressSanitizer flags for both compiler and linker
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
+
         target_compile_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined -fno-sanitize-recover=all)
         target_link_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined)
     endif ()
 
     if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND CMAKE_COMPILER_IS_GNUCC AND NOT WIN32) # werror
-         target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -ansi)
+         target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -std=c11)
     endif ()
 
     enable_testing()

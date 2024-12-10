@@ -63,13 +63,14 @@ static void callback2(enum NanoJSONCError error, const char *const key, const ch
         if (strcmp(key, "[5]") == 0) { assert(strcmp(value, "-10") == 0); counter++; }
         if (strcmp(key, "[6]") == 0) { assert(strcmp(value, "-500") == 0); counter++; }
         if (strcmp(key, "[7]") == 0) { assert(strcmp(value, "-1000") == 0); counter++; }
+        if (strcmp(key, "[8]") == 0) { assert(strcmp(value, "40.5") == 0); counter++; }
     }
 }
 
 static void testNumberArray() {
-    char *json = "[1, 22, 333, 4444, 55555, -10, -500, -1000]";
+    char *json = "[1, 22, 333, 4444, 55555, -10, -500, -1000, 40.5]";
     nanojsonc_parse_array(json, "numbers", NULL, callback2);
-    assert(counter == 8);
+    assert(counter == 9);
     counter = 0;
 }
 

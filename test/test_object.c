@@ -70,12 +70,13 @@ static void callback2(enum NanoJSONCError error, const char *const key, const ch
     if (strcmp(key, "first") == 0) { assert(strcmp(value, "John") == 0); counter++; }
     if (strcmp(key, "last") == 0) { assert(strcmp(value, "Doe") == 0); counter++; }
     if (strcmp(key, "age") == 0) { assert(strcmp(value, "15") == 0); counter++; }
+    if (strcmp(key, "height") == 0) { assert(strcmp(value, "6.0") == 0); counter++; }
 }
 
 static void testNumberProperty() {
-    char *json = "{\"first\": \"John\", \"last\": \"Doe\", \"age\": 15}";
+    char *json = "{\"first\": \"John\", \"last\": \"Doe\", \"age\": 15, \"height\": 6.0}";
     nanojsonc_parse_object(json, NULL, NULL, callback2);
-    assert(counter == 3);
+    assert(counter == 4);
     counter = 0;
 }
 
