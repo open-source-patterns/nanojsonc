@@ -8,4 +8,4 @@ Release Date: 12/10/24
       Author: Saad Shams https://www.linkedin.com/in/muizz/
 --------------------------------------------------------------------------
 1.0.0 - First release
-1.1.0 - Added support for parsing negative and floating-point numbers
+1.1.0 - Parsing for negative and float numbers. Added debug, and test flags

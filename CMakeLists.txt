@@ -49,23 +49,25 @@ install(EXPORT ${PROJECT_NAME}-targets
 # Install Headers
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}) # include/
 
-option(BUILD_TESTS "Build Tests" ON) # Tests
+# Enable AddressSanitizer and UndefinedBehaviorSanitizer (Compiler and Linker)
+option(ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
+if (ENABLE_SANITIZERS AND CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT WIN32)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fsanitize=address")
+
+    target_compile_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined -fno-sanitize-recover=all)
+    target_link_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined)
+endif ()
+
+# Debug-specific compiler flags
+if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND CMAKE_COMPILER_IS_GNUCC AND NOT WIN32)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -std=c11)
+endif ()
+
+# Tests
+option(BUILD_TESTS "Build Tests" OFF)
 if (BUILD_TESTS)
-
-    # Enable AddressSanitizer for Debug builds
-    if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT WIN32) # sanitizer
-        # Add AddressSanitizer flags for both compiler and linker
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
-
-        target_compile_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined -fno-sanitize-recover=all)
-        target_link_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined)
-    endif ()
-
-    if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND CMAKE_COMPILER_IS_GNUCC AND NOT WIN32) # werror
-         target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -std=c11)
-    endif ()
-
     enable_testing()
     include(CTest)
 
