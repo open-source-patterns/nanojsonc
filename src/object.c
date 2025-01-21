@@ -174,7 +174,7 @@ void nanojsonc_parse_object(const char *const json, const char *const parentKey,
             len = cursor - start;
 
             char value[NANOJSONC_VALUE_SIZE];
-            memset(value, 0, NANOJSONC_KEY_SIZE);
+            memset(value, 0, NANOJSONC_VALUE_SIZE);
             strncpy(value, start, len < NANOJSONC_VALUE_SIZE ? len : NANOJSONC_VALUE_SIZE - 1); // truncate larger values
             callback(len >= NANOJSONC_VALUE_SIZE ? VALUE_OVERFLOW : NO_ERROR, key, value, parent, object); // error for larger values
             if (len >= NANOJSONC_VALUE_SIZE) return;

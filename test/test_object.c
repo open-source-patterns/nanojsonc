@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "parser.h"
 #include <assert.h>
 #include <string.h>
+#include <stdio.h>
 
 int counter = 0;
 
@@ -270,6 +271,44 @@ static void testNestedArrayKeyOverflow() { // 127 key length to cause fail at fo
     counter = 0;
 }
 
+static void callback14(enum NanoJSONCError error, const char *const key, const char *const value, const char *const parentKey, void *object) {
+    if (strcmp(parentKey, "") == 0) {
+        if (strcmp(key, "age") == 0) { assert(strcmp(value, "-30.5") == 0); counter++; }
+        if (strcmp(key, "phone") == 0) { assert(strcmp(value, "null") == 0); counter++; }
+        if (strcmp(key, "isStudent") == 0) { assert(strcmp(value, "false") == 0); counter++; }
+        if (strcmp(key, "isEmployed") == 0) { assert(strcmp(value, "true") == 0); counter++; }
+    } else if (strcmp(parentKey, "[name]") == 0) {
+        if (strcmp(key, "first") == 0) { assert(strcmp(value, "John") == 0); counter++; }
+        if (strcmp(key, "last") == 0) { assert(strcmp(value, "Doe") == 0); counter++; }
+    } else if (strcmp(parentKey, "[hobbies]") == 0) {
+        if (strcmp(key, "[0]") == 0) { assert(strcmp(value, "Reading") == 0); counter++; }
+        if (strcmp(key, "[1]") == 0) { assert(strcmp(value, "Hiking") == 0); counter++; }
+        if (strcmp(key, "[2]") == 0) { assert(strcmp(value, "Cooking") == 0); counter++; }
+    } else if (strcmp(parentKey, "[address]") == 0) {
+        if (strcmp(key, "street") == 0) { assert(strcmp(value, "123 Main St") == 0); counter++; }
+        if (strcmp(key, "city") == 0) { assert(strcmp(value, "Asgard") == 0); counter++; }
+        if (strcmp(key, "state") == 0) { assert(strcmp(value, "CA") == 0); counter++; }
+        if (strcmp(key, "zip") == 0) { assert(strcmp(value, "12345") == 0); counter++; }
+    } else if (strcmp(parentKey, "[children][0][name]") == 0) {
+        if (strcmp(key, "first") == 0) { assert(strcmp(value, "Janie") == 0); counter++; }
+        if (strcmp(key, "last") == 0) { assert(strcmp(value, "Doe") == 0); counter++; }
+    } else if (strcmp(parentKey, "[children][0]") == 0) {
+        if (strcmp(key, "age") == 0) { assert(strcmp(value, "13.5") == 0); counter++; }
+    } else if (strcmp(parentKey, "[children][1][name]") == 0) {
+        if (strcmp(key, "first") == 0) { assert(strcmp(value, "Johnny") == 0); counter++; }
+        if (strcmp(key, "last") == 0) { assert(strcmp(value, "Doe") == 0); counter++; }
+    } else if (strcmp(parentKey, "[children][1]") == 0) {
+        if (strcmp(key, "age") == 0) { assert(strcmp(value, "14.5") == 0); counter++; }
+    }
+}
+
+static void testNegativeFloatNumbers() {
+    char *json = "{\"name\": {\"first\": \"John\", \"last\": \"Doe\"}, \"age\": -30.5, \"phone\": null, \"isStudent\": false, \"isEmployed\": true, \"hobbies\": [\"Reading\", \"Hiking\", \"Cooking\"], \"address\": {\"street\": \"123 Main St\", \"city\": \"Asgard\", \"state\": \"CA\", \"zip\": \"12345\"}, \"children\": [{\"name\": {\"first\": \"Janie\", \"last\": \"Doe\"}, \"age\": 13.5}, {\"name\": {\"first\": \"Johnny\", \"last\": \"Doe\"}, \"age\":14.5}]}";
+    nanojsonc_parse_object(json, NULL, NULL, callback14);
+    assert(counter == 19);
+    counter = 0;
+}
+
 int main() {
     testEmptyObject();
     testStringProperty();
@@ -289,6 +328,8 @@ int main() {
 
     testNestedArrayValueOverflow();
     testNestedArrayKeyOverflow();
+
+    testNegativeFloatNumbers();
 
     return 0;
 }
