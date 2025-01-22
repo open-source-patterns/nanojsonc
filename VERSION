@@ -1,11 +1,12 @@
 nanoJSONc - Event-Driven JSON Parser for C
 --------------------------------------------------------------------------
-Release Date: 12/10/24
+Release Date: 01/23/25
     Platform: C
      Version: 1
-    Revision: 1
+    Revision: 2
        Minor: 0
       Author: Saad Shams https://www.linkedin.com/in/muizz/
 --------------------------------------------------------------------------
 1.0.0 - First release
 1.1.0 - Parsing for negative and float numbers. Added debug, and test flags
+1.2.0 - Added tests for negative and float numbers
