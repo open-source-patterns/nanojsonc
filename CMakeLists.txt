@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.26)
 project(nanojsonc C)
 
 set(CMAKE_C_STANDARD 11)
-set(NANOJSONC_VERSION 1.0.0)
+set(NANOJSONC_VERSION 1.2.0)
 
 add_library(nanojsonc src/object.c src/array.c)
 add_library(nanojsonc::nanojsonc ALIAS nanojsonc)

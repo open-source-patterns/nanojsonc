@@ -154,7 +154,7 @@ For a complete demo of how to use nanoJSONc, please refer to the following
 
 ## Status
 
-Production - [Version 1.1.0](https://github.com/open-source-patterns/nanojsonc/blob/master/VERSION)
+Production - [Version 1.2.0](https://github.com/open-source-patterns/nanojsonc/blob/master/VERSION)
 
 ## License
 
