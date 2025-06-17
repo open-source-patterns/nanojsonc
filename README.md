@@ -110,21 +110,6 @@ Configure CMake Options: [vcpkg in CMake projects](https://learn.microsoft.com/e
 
 If you receive malloc: nano zone, set environment variable `MallocNanoZone=0`
 
-## Installation: Conan
-
-### CMakeLists.txt
-
-```cmake
-# First, tell CMake to find the package.
-# Conan will install the packages so that CMake can find it:
-
-find_package(nanojsonc)
-
-# Then, link your executable or library with the corresponding package targets:
-
-target_link_libraries(your_exe_or_lib_name nanojsonc::nanojsonc)
-```
-
 ## Installation: Direct
 
 Override `find_package`

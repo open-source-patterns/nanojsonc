@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  Parses the json-based object.
  */
 
-#include "parser.h"
+#include "nanojsonc/parser.h"
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -61,22 +61,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @see nanojsonc_parse_array
  */
-void nanojsonc_parse_object(const char *const json, const char *const parentKey, void *object, NanoJSONCCallback callback) {
+void nanojsonc_parse_object(const char *const json, const char *const parentKey, void *object, const NanoJSONCCallback callback) {
     if (json == NULL) return;
     const char *start = json, *cursor = NULL, *parent = (parentKey == NULL) ? "" : parentKey;
 
-    for (cursor = start; *cursor != '\0' && *cursor != '{'; cursor++); // begin brace
+    for (cursor = start; *cursor != '\0' && *cursor != '{'; cursor++) {} // begin brace
     if (*cursor) cursor++; // proceed to key-value pairs
 
     while (*cursor) {
-        for (; *cursor != '\0' && isspace((unsigned char) *cursor); cursor++); // whitespace
+        for (; *cursor != '\0' && isspace((unsigned char) *cursor); cursor++) {} // whitespace
 
         // parse key
         for (; *cursor != '\0' && *cursor != '\"'; cursor++); // key: begin quote
         if (*cursor == '\0') return; // empty or no key-value pairs
 
         start = cursor + 1;
-        for (cursor = start; *cursor != '\0' && *cursor != '\"'; cursor++); // key: end quote
+        for (cursor = start; *cursor != '\0' && *cursor != '\"'; cursor++) {} // key: end quote
         long len = cursor - start;
 
         char key[NANOJSONC_KEY_SIZE];
@@ -89,12 +89,12 @@ void nanojsonc_parse_object(const char *const json, const char *const parentKey,
         cursor++;
 
         // skip whitespace after the key
-        for (; *cursor != '\0' && isspace((unsigned char) *cursor); cursor++);
+        for (; *cursor != '\0' && isspace((unsigned char) *cursor); cursor++) {}
 
         if (*cursor) cursor++; // skip colon
 
         // skip whitespace before the value
-        for (; *cursor != '\0' && isspace((unsigned char) *cursor); cursor++);
+        for (; *cursor != '\0' && isspace((unsigned char) *cursor); cursor++) {}
 
         // nested object
         if (*cursor == '{') { // begin brace
@@ -156,7 +156,7 @@ void nanojsonc_parse_object(const char *const json, const char *const parentKey,
 
         if (*cursor == '"') { // value: string
             start = cursor + 1;
-            for (cursor = start; *cursor != '\0' && *cursor != '\"'; cursor++); // end quote
+            for (cursor = start; *cursor != '\0' && *cursor != '\"'; cursor++) {} // end quote
             len = cursor - start;
 
             char value[NANOJSONC_VALUE_SIZE];
@@ -170,7 +170,7 @@ void nanojsonc_parse_object(const char *const json, const char *const parentKey,
         if (isdigit(*cursor) || *cursor == '-') { // value: number
             start = cursor;
             cursor++;
-            for (; *cursor != '\0' && (isdigit(*cursor) || *cursor == '.'); cursor++); // end digit (non-whitespace)
+            for (; *cursor != '\0' && (isdigit(*cursor) || *cursor == '.'); cursor++) {} // end digit (non-whitespace)
             len = cursor - start;
 
             char value[NANOJSONC_VALUE_SIZE];
@@ -182,7 +182,7 @@ void nanojsonc_parse_object(const char *const json, const char *const parentKey,
 
         if (*cursor == 't' || *cursor == 'f' || *cursor == 'n') { // boolean (true/false) or null
             start = cursor;
-            for (; *cursor != '\0' && !isspace(*cursor) && *cursor != ',' && *cursor != '}'; cursor++);
+            for (; *cursor != '\0' && !isspace(*cursor) && *cursor != ',' && *cursor != '}'; cursor++) {}
             len = cursor - start;
 
             char value[NANOJSONC_VALUE_SIZE];
@@ -192,7 +192,7 @@ void nanojsonc_parse_object(const char *const json, const char *const parentKey,
         }
 
         // skip whitespace after the value
-        for (; *cursor != '\0' && isspace(*cursor); cursor++);
+        for (; *cursor != '\0' && isspace(*cursor); cursor++) {}
 
         if (*cursor) cursor++; // either EOF or comma
     }

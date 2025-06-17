@@ -4,6 +4,8 @@ project(nanojsonc C)
 set(CMAKE_C_STANDARD 11)
 set(NANOJSONC_VERSION 1.2.0)
 
+include_directories(include)
+
 add_library(nanojsonc src/object.c src/array.c)
 add_library(nanojsonc::nanojsonc ALIAS nanojsonc)
 target_compile_features(nanojsonc PRIVATE c_std_11)

@@ -32,7 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** @file array.c
  *  To parse JSON based array
  */
-#include "parser.h"
+#include "nanojsonc/parser.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
@@ -58,12 +58,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @see nanojsonc_parse_object
  */
-void nanojsonc_parse_array(const char *const json, const char *const parentKey, void *object, NanoJSONCCallback callback) {
+void nanojsonc_parse_array(const char *const json, const char *const parentKey, void *object, const NanoJSONCCallback callback) {
     if (json == NULL) return;
     const char *start = json, *cursor = NULL, *parent = parentKey == NULL ? "" : parentKey;
     int index = 0; // current index of the array
 
-    for (cursor = start; *cursor != '\0' && *cursor != '['; cursor++); // begin bracket
+    for (cursor = start; *cursor != '\0' && *cursor != '['; cursor++) {} // begin bracket
     if (*cursor) cursor++; // proceed to values
 
     while (*cursor != '\0') {
@@ -140,7 +140,7 @@ void nanojsonc_parse_array(const char *const json, const char *const parentKey, 
         // parse values (string, number, boolean, null)
         if (*cursor == '"') { // begin quote
             start = cursor + 1;
-            for (cursor = start; *cursor != '\0' && *cursor != '\"'; cursor++); // end quote
+            for (cursor = start; *cursor != '\0' && *cursor != '\"'; cursor++) {} // end quote
             long len = cursor - start;
 
             char value[NANOJSONC_VALUE_SIZE];
@@ -156,7 +156,7 @@ void nanojsonc_parse_array(const char *const json, const char *const parentKey, 
         if (isdigit(*cursor) || *cursor == '-') { // value: number
             start = cursor;
             cursor++;
-            for (; *cursor != '\0' && (isdigit(*cursor) || *cursor == '.'); cursor++); // end digit (non-whitespace)
+            for (; *cursor != '\0' && (isdigit(*cursor) || *cursor == '.'); cursor++) {} // end digit (non-whitespace)
             long len = cursor - start;
 
             char value[NANOJSONC_VALUE_SIZE];
@@ -171,7 +171,7 @@ void nanojsonc_parse_array(const char *const json, const char *const parentKey, 
 
         if (*cursor == 't' || *cursor == 'f' || *cursor == 'n') { // boolean (true/false) or null
             start = cursor;
-            for (; *cursor != '\0' && !isspace(*cursor) && *cursor != ',' && *cursor != ']'; cursor++);
+            for (; *cursor != '\0' && !isspace(*cursor) && *cursor != ',' && *cursor != ']'; cursor++) {}
             long len = cursor - start;
 
             char value[NANOJSONC_VALUE_SIZE];
