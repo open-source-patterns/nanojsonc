@@ -137,10 +137,6 @@ For a complete demo of how to use nanoJSONc, please refer to the following
 * [Effective CMake](https://www.youtube.com/watch?v=rLopVhns4Zs)
 * [It's Time To Do CMake Right](https://pabloariasal.github.io/2018/02/19/its-time-to-do-cmake-right)
 
-## Status
-
-Production - [Version 1.2.0](https://github.com/open-source-patterns/nanojsonc/blob/master/VERSION)
-
 ## License
 
 BSD 3-Clause License
