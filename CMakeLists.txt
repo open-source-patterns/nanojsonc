@@ -1,55 +1,72 @@
-cmake_minimum_required(VERSION 3.26)
-project(nanojsonc C)
+# A: Project Setup
+cmake_minimum_required(VERSION 3.31)
+project(nanojsonc VERSION 1.3.0 LANGUAGES C)
 
 set(CMAKE_C_STANDARD 11)
-set(NANOJSONC_VERSION 1.2.0)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 
-include_directories(include)
-
-add_library(nanojsonc src/object.c src/array.c)
+# B: Source library
+# 1. Library Definition, Target properties
+add_library(nanojsonc STATIC src/object.c src/array.c)
 add_library(nanojsonc::nanojsonc ALIAS nanojsonc)
 target_compile_features(nanojsonc PRIVATE c_std_11)
 
+# 2. Public Header Paths
 target_include_directories(nanojsonc PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
+# Include modules for install and config
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-# Config
-configure_package_config_file(build/config.cmake
-        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake # cmake-build-debug/
-        INSTALL_DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME} NO_SET_AND_CHECK_MACRO) # share/
+# C: Configuration
+# 1. Generate Template
+file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/nanojsonc-config.cmake.in"
+"@PACKAGE_INIT@\n\n\
+include(\"\${CMAKE_CURRENT_LIST_DIR}/nanojsonc-targets.cmake\")\n\n\
+check_required_components(nanojsonc)\n")
 
-# Version
+# 2. Configure
+configure_package_config_file(
+        ${CMAKE_CURRENT_BINARY_DIR}/nanojsonc-config.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/nanojsonc-config.cmake
+        INSTALL_DESTINATION ${CMAKE_INSTALL_DATADIR}/nanojsonc
+        NO_SET_AND_CHECK_MACRO)
+
+# 3. Write version file
 write_basic_package_version_file(
-        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
-        VERSION ${NANOJSONC_VERSION}
+        ${CMAKE_CURRENT_BINARY_DIR}/nanojsonc-config-version.cmake
+        VERSION ${PROJECT_VERSION}
         COMPATIBILITY SameMajorVersion)
 
-# Install Config & Version
-install(FILES
-            ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake # cmake-build-debug/
-            ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake # cmake_build-debug/
-        DESTINATION
-            ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}) # share/
+# D: Installation steps
+# 1. Install headers
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/nanojsonc
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-# Create export set to enable import in other CMake Projects
-install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}-targets # create export set
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        RUNTIME DESTINATION bin
-        INCLUDES DESTINATION include
-)
+# 2. Install library and export targets
+install(TARGETS nanojsonc
+        EXPORT nanojsonc-targets
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            COMPONENT nanojsonc_RunTime
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            COMPONENT nanojsonc_RunTime
+            NAMELINK_COMPONENT nanojsonc_Development
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            COMPONENT nanojsonc_Development)
+
 # Install Export Set
-install(EXPORT ${PROJECT_NAME}-targets
-        FILE ${PROJECT_NAME}-targets.cmake
+install(EXPORT nanojsonc-targets
+        FILE nanojsonc-targets.cmake
         NAMESPACE nanojsonc::
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}) # lib/cmake/nanojsonc
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/nanojsonc)
 
-# Install Headers
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}) # include/
+# 4. Install config and version files
+install(FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/nanojsonc-config.cmake # Install Config
+        ${CMAKE_CURRENT_BINARY_DIR}/nanojsonc-config-version.cmake # Install version
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/nanojsonc)
 
 # Enable AddressSanitizer and UndefinedBehaviorSanitizer (Compiler and Linker)
 option(ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
@@ -58,21 +75,18 @@ if (ENABLE_SANITIZERS AND CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT WIN32)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fsanitize=address")
 
-    target_compile_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined -fno-sanitize-recover=all)
-    target_link_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined)
+    target_compile_options(nanojsonc PRIVATE -fsanitize=address,undefined -fno-sanitize-recover=all)
+    target_link_options(nanojsonc PRIVATE -fsanitize=address,undefined)
 endif ()
 
 # Debug-specific compiler flags
 if (CMAKE_BUILD_TYPE STREQUAL "Debug" AND CMAKE_COMPILER_IS_GNUCC AND NOT WIN32)
-    target_compile_options(${PROJECT_NAME} PRIVATE -Werror -Wall -std=c11)
+    target_compile_options(nanojsonc PRIVATE -Werror -Wall)
 endif ()
 
 # Tests
 option(BUILD_TESTS "Build Tests" OFF)
 if (BUILD_TESTS)
     enable_testing()
-    include(CTest)
-
     add_subdirectory(test)
-    add_subdirectory(example)
 endif ()
