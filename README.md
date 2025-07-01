@@ -145,7 +145,7 @@ For a complete demo of how to use nanoJSONc, please refer to the following
       ```shell
       shasum -a 512 /path/to/nanojsonc.tar.gz
       vcpkg hash /path/to/nanojsonc-1.0.0.tar.gz
-      curl -L https://github.com/open-source-patterns/nanojsonc/archive/refs/tags/1.3.0.tar.gz | sha512sum
+      curl -L https://github.com/open-source-patterns/nanojsonc/archive/refs/tags/1.0.0.tar.gz | sha512sum
       ```
 
 * **Update version**  
