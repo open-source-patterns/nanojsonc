@@ -137,6 +137,21 @@ For a complete demo of how to use nanoJSONc, please refer to the following
 * [Effective CMake](https://www.youtube.com/watch?v=rLopVhns4Zs)
 * [It's Time To Do CMake Right](https://pabloariasal.github.io/2018/02/19/its-time-to-do-cmake-right)
 
+## VCPKG
+
+* **Update vcpkg Port**
+    * Update `vcpkg.json` version on vcpkg repository.
+    * Update portfile.cmake `SHA512`
+      ```shell
+      shasum -a 512 /path/to/nanojsonc.tar.gz
+      vcpkg hash /path/to/nanojsonc-1.0.0.tar.gz
+      curl -L https://github.com/open-source-patterns/nanojsonc/archive/refs/tags/1.3.0.tar.gz | sha512sum
+      ```
+
+* **Update version**  
+  `vcpkg x-add-version collection --overwrite-version`
+  This updates version metadata and links the correct git tree.
+
 ## License
 
 BSD 3-Clause License
